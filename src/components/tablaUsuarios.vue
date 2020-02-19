@@ -81,7 +81,7 @@
     :before-close = "cerrarDialogo">
 
     <el-row  v-if="!inputDisabled" :gutter="20" class="inputline">
-      <el-col :span="12">
+      <el-col :span="24">
         <el-input 
           placeholder="Nombre" 
           size="small"
@@ -95,7 +95,27 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" class="inputline">
+    <el-row  v-if="inputDisabled" :gutter="20" class="inputline">
+      <el-col :span="24">
+        <el-table 
+          :data="deleteItems">
+          <el-table-column 
+            prop  = "name"
+            label = "Nombre">
+          </el-table-column>
+          <el-table-column 
+            prop  = "last_name"
+            label = "Apellido">
+          </el-table-column>
+          <el-table-column 
+            prop  = "email"
+            label = "Email">
+          </el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
+
+    <el-row v-if="transaction != 'eliminar'" :gutter="20" class="inputline">
       <el-col :span="15">
         <el-input 
           :disabled = "inputDisabled"
@@ -156,7 +176,6 @@ export default {
       this.client        = row
       this.transaction = "detalle"
       this.inputDisabled = true
-      console.log(row)
     },
     handleEditar(row){
       this.titleText     = "Editar cliente"
@@ -171,10 +190,12 @@ export default {
     },
     eliminarCliente(){
       this.selectionToggle = true
-      console.log('Accion de eliminar')
     },
     confirmarDelete(){
-      console.log('Confirmar eliminar')
+      this.titleText     = "Confirma que desea eliminar los siguientes registros?"
+      this.dialogVisible = true
+      this.inputDisabled = true
+      this.transaction = "eliminar"
     },
     selectionChange(val){
       this.deleteItems = val
@@ -187,7 +208,66 @@ export default {
       this.resetDialogo()
     },
     okDialogo(){
-      this.resetDialogo()
+      switch(this.transaction){
+        case 'crear':
+          axios.post(apibasepath+'/users',this.client)
+            .then((response) => {
+              if (response.status == 200){
+                this.tableData.push(response.data)
+              }
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+            .finally(() => {
+              this.resetDialogo()
+            })
+        break
+        case 'editar':
+          axios.put(apibasepath+'/users/'+this.client.id,this.client)
+            .then((response) => {
+              if (response.status == 200){
+                let index = this.tableData.findIndex(client => client.id == response.data.id)
+                this.tableData[index] = response.data
+              }
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+            .finally(() => {
+              this.resetDialogo()
+            })
+        break
+        case 'eliminar':
+          let params = []
+          this.deleteItems.forEach((val,index)=>{
+            params.push(val.id)
+          })
+          let items = {}
+          items.ids = params
+          axios.post(apibasepath+'/users/delete',items)
+            .then((response) => {
+              if (response.status == 200){
+                this.tableData.forEach((cliente,index)=>{
+                  response.data.forEach((val)=>{
+                    if (cliente.id == val){
+                      delete this.tableData[index]
+                    }
+                  })
+                })
+              }
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+            .finally(() => {
+              this.$refs.multipleTable.clearSelection();
+              this.resetDialogo()
+              this.deleteItems = []
+              this.selectionToggle = false
+            })
+        break
+      }
     },
     resetDialogo(){
       this.titleText     = ""
@@ -198,7 +278,7 @@ export default {
     }
   },
   mounted(){
-    axios.get('http://testingbackend.com/api/users')
+    axios.get(apibasepath+'/users')
       .then((response) => {
         this.tableData = response.data
         console.log(response)

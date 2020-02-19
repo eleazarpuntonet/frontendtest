@@ -7,9 +7,10 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+window.apibasepath = 'http://testingbackend.com/api'
 window.axios = axios.create({
   baseURL: 'http://localhost:8080',
-  timeout: 10000,
+  timeout: 50000,
   withCredentials: false,
   params: {} // do not remove this, its added to add params later in the config
 })
