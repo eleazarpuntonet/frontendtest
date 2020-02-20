@@ -81,7 +81,7 @@
     :before-close = "cerrarDialogo">
 
     <el-row  v-if="!inputDisabled" :gutter="20" class="inputline">
-      <el-col :span="24">
+      <el-col :span="12">
         <el-input 
           placeholder="Nombre" 
           size="small"
@@ -268,6 +268,8 @@ export default {
             })
         break
       }
+      this.loadClientes()
+
     },
     resetDialogo(){
       this.titleText     = ""
@@ -275,20 +277,23 @@ export default {
       this.transaction = ""
       this.inputDisabled = false
       this.dialogVisible = false
-    }
+    },
+    loadClientes(){
+      axios.get(apibasepath+'/users')
+        .then((response) => {
+          this.tableData = response.data
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+        .finally(() => {
+          console.log('Llamado finalizado')
+        })
+      }
   },
   mounted(){
-    axios.get(apibasepath+'/users')
-      .then((response) => {
-        this.tableData = response.data
-        console.log(response)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-      .finally(() => {
-        console.log('Llamado finalizado')
-      })
+    this.loadClientes()
   },
   created(){
     console.log(this.texto)
