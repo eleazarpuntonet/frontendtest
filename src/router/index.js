@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import tablausuarios from '@/components/tablaUsuarios.vue'
-import reportes from '@/components/reportes.vue'
+import reporteTiendas from '@/components/reporteTiendas.vue'
 
 Vue.use(VueRouter)
 
@@ -12,12 +12,12 @@ const routes = [
     component: tablausuarios
   },
   {
-    path: '/reportes',
-    name: 'Reportes',
+    path: '/tiendas',
+    name: 'Tiendas',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: reportes
+    component: reporteTiendas
   }
 ]
 
