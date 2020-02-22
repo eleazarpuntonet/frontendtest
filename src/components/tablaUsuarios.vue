@@ -83,19 +83,21 @@
     <el-row  v-if="!inputDisabled" :gutter="20" class="inputline">
       <el-col :span="12">
         <el-input 
-          placeholder="Nombre" 
-          size="small"
-          v-model="client.name"></el-input>
+          placeholder = "Nombre"
+          size        = "small"
+          v-model     = "client.name">
+        </el-input>
       </el-col>
       <el-col :span="12">
         <el-input 
-          placeholder="Apellido" 
-          size="small"
-          v-model="client.last_name"></el-input>
+          placeholder = "Apellido"
+          size        = "small"
+          v-model     = "client.last_name">
+        </el-input>
       </el-col>
     </el-row>
 
-    <el-row  v-if="inputDisabled" :gutter="20" class="inputline">
+    <el-row  v-if="transaction == 'eliminar'" :gutter="20" class="inputline">
       <el-col :span="24">
         <el-table 
           :data="deleteItems">
@@ -222,6 +224,9 @@ export default {
             .finally(() => {
               this.resetDialogo()
             })
+        break
+        case 'detalle':
+            this.resetDialogo()
         break
         case 'editar':
           axios.put(apibasepath+'/users/'+this.client.id,this.client)

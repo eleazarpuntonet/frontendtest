@@ -41,6 +41,36 @@
             width = "55">
           </el-table-column>
         </template>
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-row :gutter="20" class="inputline">
+              <el-col :span="24">
+                <el-table
+                  :data="props.row.autos_inventario"
+                  style="width: 100%">
+                  <el-table-column
+                    label = "Modelo"
+                    prop  = "model">
+                  </el-table-column>
+                  <el-table-column
+                    label = "Anio"
+                    prop  = "year">
+                  </el-table-column>
+                  <el-table-column
+                    label = "Color"
+                    prop  = "color">
+                  </el-table-column>
+                  <el-table-column
+                    label = "Cantidad"
+                    prop  = "cantidad_autos.cantidad">
+                  </el-table-column>
+                  
+                </el-table>
+              </el-col>
+            </el-row>
+
+          </template>
+        </el-table-column>
         <el-table-column 
             prop  = "storename"
             label = "Nombre">
